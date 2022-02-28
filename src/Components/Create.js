@@ -23,8 +23,8 @@ class Create extends Component {
         this.state = {
             username : 'Someone',
             age : 15,
-            colour: 'Pink',
-            isCreated: false
+            colour : 'Pink',
+            isCreated : false
         }
         this.handleChange = this.handleChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -37,17 +37,16 @@ class Create extends Component {
 
     submitForm(username, age, colour){
         // Do submit actions
-    
-        let response = fetch("https://crudcrud.com/api/dc0963c770fb4403be8cfaf470ee2da2/users",{
+    fetch(this.props.api,{
             method : "POST",
             headers: {'Content-Type' : 'application/json'},
             body : JSON.stringify({
                 name : username,
                 age : age,
-                colour : colour,
+                colour : colour
             }),
         }).then(res => {
-            if(res.status == 201){
+            if(res.status === 201){
                 this.setState({isCreated : true});
             }
         })        
@@ -56,7 +55,8 @@ class Create extends Component {
 
 
     render() { 
-        const {username, age, colour, isCreated} = this.state;
+        var {username, age, colour, isCreated} = this.state;
+        
         return (
             <div>
                 <h1>Create Page</h1>
