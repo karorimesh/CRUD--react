@@ -8,7 +8,7 @@ class App extends React.Component{
     
 
     render(){
-        const api = 'https://crudcrud.com/api/ca7e07ff426c4902aba5dd3d9cd13e4b';
+        const api = 'https://crudcrud.com/api/ca7e07ff426c4902aba5dd3d9cd13e4b/users';
         // const characters = [
         //     {
         //         name: 'John',

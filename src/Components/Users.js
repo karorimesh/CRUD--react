@@ -1,5 +1,5 @@
 // A simple table displaying the users
-import React, {Component, useState} from "react";
+import React, {Component} from "react";
 import ApiUtil from "./ApiUtil";
 
 const TableHeader = () => {
@@ -22,8 +22,8 @@ const TableBody = (props) => {
                 <td>{user.name}</td>
                 <td>{user.age}</td>
                 <td>{user.colour}</td>
-                <td><button onClick={Users.editUser(user.user_id)}>Edit</button></td>
-                <td><button onClick={deleteUser(user._id)}>Delete</button></td>
+                <td><button >Edit</button></td>
+                <td><button onClick = {e => deleteUser(user._id, props.api)}>Delete</button></td>
             </tr>
         )
     })
@@ -38,8 +38,8 @@ const TableBody = (props) => {
 
 
 // Delete a user from their user Id
-function deleteUser(id){
-    fetch(ApiUtil.api + '/' + id,{
+function deleteUser(id, api){
+    fetch(api + '/' + id,{
         method:'DELETE'
     }).then((res) => {
         if(res.status === 200){
@@ -133,7 +133,7 @@ class Users extends Component {
                 <h1>Users Table</h1>
                 <table>
                     <TableHeader/>
-                    <TableBody usersList = {users}/>
+                    <TableBody usersList = {users} api = {this.props.api}/>
                 </table>
 
                 {toUpdate ?
@@ -160,7 +160,7 @@ class Users extends Component {
                             }
                         </form>
                     </div> :
-                    <p>No such user/ problem with API</p>
+                    null
                 }
 
                 {this.props.children}
