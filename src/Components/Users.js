@@ -1,6 +1,5 @@
-// A simple table displaying the users
+// A simple table displaying the users, update and delete
 import React, {Component} from "react";
-import ApiUtil from "./ApiUtil";
 
 const TableHeader = () => {
     return(
@@ -14,46 +13,44 @@ const TableHeader = () => {
     )
 }
 
-const TableBody = (props) => {
+// const TableBody = (props) => {
 
-    const users = props.usersList.map((user) => {
-        return (
-            <tr key={user._id}>
-                <td>{user.name}</td>
-                <td>{user.age}</td>
-                <td>{user.colour}</td>
-                <td><button >Edit</button></td>
-                <td><button onClick = {e => deleteUser(user._id, props.api)}>Delete</button></td>
-            </tr>
-        )
-    })
-    return(
-        <tbody>
-            {users}
-        </tbody>
-    )
-}
+//     const users = props.usersList.map((user) => {
+//         return (
+//             <tr key={user._id}>
+//                 <td>{user.name}</td>
+//                 <td>{user.age}</td>
+//                 <td>{user.colour}</td>
+//                 <td><button onClick={e => props.editUser(user._id)} >Edit</button></td>
+//                 <td><button onClick = {e => deleteUser(user._id, props.api)}>Delete</button></td>
+//             </tr>
+//         )
+//     })
+//     return(
+//         <tbody>
+//             {users}
+//         </tbody>
+//     )
+// }
 
 // Function to update a user
 
 
 // Delete a user from their user Id
-function deleteUser(id, api){
-    fetch(api + '/' + id,{
-        method:'DELETE'
-    }).then((res) => {
-        if(res.status === 200){
-            alert('deletion successfull');
-        }
-    });
-}
+
+
+
 
 class Users extends Component {
 
     constructor(props){
         super(props)
         this.state = {
-            user : {},
+
+            id: '',
+            name: '',
+            age: 0,
+            colour: '',
             toUpdate : false,
             isUpdated : false,
             users : [],
@@ -93,38 +90,51 @@ class Users extends Component {
             }),
         }).then(res => {
             if (res.status === 200) {
-                this.setState({ isUpdated: true });
+                this.setState({
+                    isUpdated : true,
+                    toUpdate : false 
+                 });
             }
         })
 
     }
 
-    editUser(id){
-        
-        fetch(ApiUtil.api + '/' + id,{
-            method:'GET'
-        }).then((res) => {
+    editUser(id){        
+        fetch(this.props.api + '/' + id)
+        .then((res) => {
             if(res.status === 200){
-                res.json();
+               return res.json();
             }
         }).then((json) => {
+            console.log(json)
             this.setState({
-                user : json,
+                name : json.name,
+                age : json.age,
+                colour : json.colour,
+                id : json._id,
                 toUpdate : true
             })
         });
     
     }
 
-    submitEditedUser
+    deleteUser(id){
+        fetch(this.props.api + '/' + id,{
+            method:'DELETE'
+        }).then((res) => {
+            if(res.status === 200){
+                alert('deletion successfull');
+            }
+        });
+    }
 
 
     render() { 
-        const {IsDataAvailable, users, user, toUpdate, isUpdated} = this.state;
+        const {IsDataAvailable, users, toUpdate, isUpdated, name, age, colour, id} = this.state;
         
         if(!IsDataAvailable){
             return(
-                <div><p>Please wait/ Check API {ApiUtil.api}</p></div>
+                <div><p>Please wait/ Check API </p></div>
             )
         }
 
@@ -133,7 +143,20 @@ class Users extends Component {
                 <h1>Users Table</h1>
                 <table>
                     <TableHeader/>
-                    <TableBody usersList = {users} api = {this.props.api}/>
+                    <tbody>
+                        {users.map((user) => {
+                            return (
+                                <tr key={user._id}>
+                                    <td>{user.name}</td>
+                                    <td>{user.age}</td>
+                                    <td>{user.colour}</td>
+                                    <td><button onClick={e => this.editUser(user._id)} >Edit</button></td>
+                                    <td><button onClick={e => this.deleteUser(user._id)}>Delete</button></td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                    
                 </table>
 
                 {toUpdate ?
@@ -141,28 +164,28 @@ class Users extends Component {
                         <h1>Update Page</h1>
                         <form onSubmit={e => {
                             e.preventDefault();
-                            this.submitForm(user.name, user.age, user.colour, user._id);
+                            this.submitForm(name, age,colour, id);
                         }}>
-                            <input placeholder="Name" name="username" value={user.name} onChange={this.handleChange} /><br />
-                            <input placeholder="Age" name="age" type="number" value={user.age} onChange={this.handleChange} /><br />
-                            <input placeholder="Favourite Color" name="colour" value={user.colour} onChange={this.handleChange} /><br />
-                            <button type="submit" >Create</button>
-                            {isUpdated ?
-                                <div>
-                                    <p>User Updated successfully </p>
-                                    {this.setState({
-                                        toUpdate: false
-                                    })}
-                                    {this.componentDidMount()}
-                                </div>
-                                :
-                                <p>Failed to update</p>
-                            }
+                            <input placeholder="Name" name="name" value={name} onChange={this.handleChange} /><br />
+                            <input placeholder="Age" name="age" type="number" value={age} onChange={this.handleChange} /><br />
+                            <input placeholder="Favourite Color" name="colour" value={colour} onChange={this.handleChange} /><br />
+                            <button type="submit" >Update</button>
+                            
                         </form>
+                        {isUpdated ?
+                            <div>
+                                <p>User Updated successfully </p>
+                                {this.setState({
+                                    toUpdate: false
+                                })}
+                            </div>
+                            :
+                            null
+                        }
                     </div> :
                     null
                 }
-
+                
                 {this.props.children}
             </div>
         );

@@ -2,19 +2,6 @@
 import React, {Component} from "react";
 
 
-// const CreateUserForm = (props) => {
-//     return(
-//         <form onSubmit={ e => {
-//             e.preventDefault();
-//             submitForm(props.user.username, props.user.age, props.user.colour);
-//         }}>
-//             <input placeholder="Name" value = {props.user.username}/><br/>
-//             <input placeholder="Age" type="number" value= {props.user.age}/><br/>
-//             <input placeholder="Favourite Color" value= {props.user.colour} /><br/>
-//             <button type = "submit" >Create</button>
-//         </form>
-//     )
-// }
 
 class Create extends Component {
 
